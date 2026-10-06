@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jantri Ledger Workstation</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    background: #edf2f7;
+    color: #2d3748;
+}
+
+.box {
+    max-width: 850px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.10);
+}
+
+h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #1e3c72;
+    border-bottom: 2px solid #1e3c72;
+    padding-bottom: 10px;
+}
+
+/* =========================
+   TOP TABS
+========================= */
+
+.menu-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.btn-menu {
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 5px;
+    background: #28a745;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-menu:hover {
+    background: #218838;
+}
+
+.btn-menu.active {
+    background: #1e3c72;
+}
+
+/* =========================
+   PANELS
+========================= */
+
+.tool-panel {
+    display: none;
+    background: #f8f9fa;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 18px;
+}
+
+.tool-panel h4 {
+    margin-top: 0;
+    color: #1e3c72;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+input {
+    width: 140px;
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn-prime {
+    border: 0;
+    border-radius: 6px;
+    padding: 10px 18px;
+    background: #1e3c72;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-prime:hover {
+    opacity: .9;
+}
+
+/* =========================
+   OUTPUT
+========================= */
+
+.clean-out {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 6px;
+}
+
+.clean-text {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+/* =========================
+   JANTRI BOARD
+========================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+}
+
+.cell {
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.cell.active {
+    background: #feebc8;
+    border-color: #f6ad55;
+    color: #c05621;
+    font-weight: bold;
+}
+
+/* =========================
+   TOTAL
+========================= */
+
+.footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.total-box {
+    padding: 11px 15px;
+    background: #fff5f5;
+    border-left: 5px solid #d9534f;
+    color: #c53030;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.note {
+    margin-top: 8px;
+    color: #718096;
+    font-size: 12px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 8px;
+    }
+
+    .box {
+        padding: 12px;
+    }
+
+    .menu-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    .grid {
+        gap: 3px;
+    }
+
+    .cell {
+        min-height: 45px;
+        font-size: 11px;
+    }
+
+    .footer-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .action-buttons {
+        width: 100%;
+    }
+
+    .action-buttons button {
+        flex: 1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>📊 Jantri Ledger Workstation</h2>
+
+<!-- =========================
+     4 BUTTONS
+========================= -->
+
+<div class="menu-container">
+
+    <button id="tabWa" class="btn-menu active">
+        💬 Copy-Paste
+    </button>
+
+    <button id="tabGrid" class="btn-menu">
+        📋 Jantri Board
+    </button>
+
+    <button id="tabLt" class="btn-menu">
+        ➡️ From - To
+    </button>
+
+    <button id="tabCr" class="btn-menu">
+        ❌ Crossing
+    </button>
+
+</div>
+
+
+<!-- =========================
+     1. COPY PASTE
+========================= -->
+
+<div id="panelWa" class="tool-panel" style="display:block;">
+
+    <h4>💬 WhatsApp Auto Filter</h4>
+
+    <textarea
+        id="whatsappInput"
+        placeholder="उदाहरण:
+12=50
+25=100
+03=20
+
+एक line में भी:
+12=50 25=100 03=20">
+    </textarea>
+
+    <br><br>
+
+    <button id="btnWaSubmit" class="btn-prime">
+        ⚡ सबमिट और साफ़ करें
+    </button>
+
+    <div id="outBox" class="clean-out">
+
+        <div style="color:#2e7d32;font-weight:bold;margin-bottom:6px;">
+            ✨ साफ़ किया हुआ टेक्स्ट:
+        </div>
+
+        <div id="cleanedText" class="clean-text"></div>
+
+        <button
+            id="btnCopyText"
+            class="btn-prime"
+            style="background:#6c757d;margin-top:8px;">
+            📋 कॉपी टेक्स्ट
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     2. JANTRI BOARD
+========================= -->
+
+<div id="panelGrid" class="tool-panel">
+
+    <h4>📋 00 से 99 Jantri Board</h4>
+
+    <div id="jantriGrid" class="grid"></div>
+
+</div>
+
+
+<!-- =========================
+     3. FROM TO
+========================= -->
+
+<div id="panelLt" class="tool-panel">
+
+    <h4>➡️ From - To लड़ी</h4>
+
+    <div class="input-row">
+
+        <input
+            type="number"
+            id="fromNum"
+            min="0"
+            max="99"
+            placeholder="From (00)">
+
+        <input
+            type="number"
+            id="toNum"
+            min="0"
+            max="99"
+            placeholder="To (99)">
+
+        <input
+            type="number"
+            id="ladiAmount"
+            min="0"
+            placeholder="Amount ₹">
+
+    </div>
+
+    <button id="btnLtSubmit" class="btn-prime">
+        ➕ लड़ी लोड करें
+    </button>
+
+    <div class="note">
+        उदाहरण: From 03, To 06, Amount ₹50 →
+        03, 04, 05, 06 प्रत्येक में ₹50 जुड़ेगा।
+    </div>
+
+</div>
+
+
+<!-- =========================
+     4. CROSSING
+========================= -->
+
+<div id="panelCr" class="tool-panel">
+
+    <h4>❌ Crossing जोड़ियां</h4>
+
+    <div class="input-row">
+
+        <input
+            type="text"
+            id="crossDigits"
+            maxlength="10"
+            placeholder="अंक जैसे 123">
+
+        <input
+            type="number"
+            id="crossAmount"
+            min="0"
+            placeholder="Amount ₹">
+
+    </div>
+
+    <button id="btnCrSubmit" class="btn-prime">
+        🎲 जोड़ियां बनाएं
+    </button>
+
+    <div class="note">
+        123 डालने पर 11, 12, 13, 21, 22, 23,
+        31, 32, 33 जैसी 2-digit जोड़ियां बनेंगी।
+    </div>
+
+</div>
+
+
+<!-- =========================
+     TOTAL + CONTROLS
+========================= -->
+
+<div class="footer-actions">
+
+    <div id="mainTotal" class="total-box">
+        कुल हिसाब: ₹ 0
+    </div>
+
+    <div class="action-buttons">
+
+        <button
+            id="btnShareWhatsApp"
+            class="btn-prime"
+            style="background:#25D366;">
+            🟢 WhatsApp
+        </button>
+
+        <button
+            id="btnWipeSystem"
+            class="btn-prime"
+            style="background:#dc3545;">
+            🗑️ Clear All
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   JANTRI DATABASE
+   ===================================================== */
+
+/*
+   IMPORTANT:
+   हर key हमेशा EXACT 2 digit होगी:
+
+   0  -> 00
+   1  -> 01
+   3  -> 03
+   12 -> 12
+   99 -> 99
+
+   इससे 3/4 digit input गलती से दूसरे number
+   में convert नहीं होगा।
+*/
+
+const jantriData = Object.create(null);
+
+for (let i = 0; i <= 99; i++) {
+    jantriData[String(i).padStart(2, "0")] = 0;
+}
+
+
+/* =====================================================
+   SAFE NUMBER
+   ===================================================== */
+
+function toInteger(value) {
+
+    const text = String(value).trim();
+
+    if (!/^\d+$/.test(text)) {
+        return null;
+    }
+
+    const number = Number.parseInt(text, 10);
+
+    if (!Number.isSafeInteger(number)) {
+        return null;
+    }
+
+    return number;
+}
+
+
+/* =====================================================
+   NORMALIZE 2 DIGIT NUMBER
+   ===================================================== */
+
+function normalizeTwoDigit(value) {
+
+    const text = String(value).trim();
+
+    /*
+       केवल 1 या 2 digit allowed
+    */
+
+    if (!/^\d{1,2}$/.test(text)) {
+        return null;
+    }
+
+    const number = Number.parseInt(text, 10);
+
+    if (number < 0 || number > 99) {
+        return null;
+    }
+
+    return String(number).padStart(2, "0");
+}
+
+
+/* =====================================================
+   ADD AMOUNT
+   ===================================================== */
+
+function addAmount(key, amount) {
+
+    if (!Object.prototype.hasOwnProperty.call(jantriData, key)) {
+        return false;
+    }
+
+    if (!Number.isSafeInteger(amount) || amount < 0) {
+        return false;
+    }
+
+    jantriData[key] += amount;
+
+    return true;
+}
+
+
+/* =====================================================
+   CALCULATE TOTAL
+   ===================================================== */
+
+function calculateTotal() {
+
+    let total = 0;
+
+    for (let i = 0; i <= 99; i++) {
+
+        const key =
+            String(i).padStart(2, "0");
+
+        total += jantriData[key];
+    }
+
+    return total;
+}
+
+
+/* =====================================================
+   RENDER BOARD
+   ===================================================== */
+
+function renderBoard() {
+
+    const grid =
+        document.getElementById("jantriGrid");
+
+    let html = "";
+
+    for (let i = 0; i <= 99; i++) {
+
+        const key =
+            String(i).padStart(2, "0");
+
+        const amount =
+            jantriData[key];
+
+        html += `
+            <div class="cell ${amount > 0 ? "active" : ""}">
+                <b>${key}</b>
+                <span>
+                    ${amount > 0 ? "₹" + amount : "-"}
+                </span>
+            </div>
+        `;
+    }
+
+    grid.innerHTML = html;
+
+    document.getElementById("mainTotal").innerText =
+        "कुल हिसाब: ₹ " + calculateTotal();
+}
+
+
+/* =====================================================
+   TAB SYSTEM
+   ===================================================== */
+
+function switchTab(tabId, panelId) {
+
+    document
+        .querySelectorAll(".btn-menu")
+        .forEach(button => {
+            button.classList.remove("active");
+        });
+
+    document
+        .querySelectorAll(".tool-panel")
+        .forEach(panel => {
+            panel.style.display = "none";
+        });
+
+    document
+        .getElementById(tabId)
+        .classList.add("active");
+
+    document
+        .getElementById(panelId)
+        .style.display = "block";
+}
+
+
+/* =====================================================
+   COPY-PASTE PARSER
+   ===================================================== */
+
+/*
+   केवल EXACT 1-2 digit number स्वीकार होगा.
+
+   Valid:
+   1=50
+   01=50
+   12=100
+   99=500
+
+   Invalid:
+   123=50
+   1234=100
+
+   इससे 3/4 digit data गलती से 2 digit board
+   में नहीं जाएगा।
+*/
+
+function parseWhatsApp() {
+
+    const raw =
+        document.getElementById("whatsappInput").value;
+
+    if (!raw.trim()) {
+
+        alert("मैसेज बॉक्स खाली है!");
+
+        return;
+    }
+
+
+    /*
+       Number = 1 या 2 digit
+       Separator = = - / .
+       Amount = पूरा integer
+    */
+
+    const regex =
+        /(^|[\s,;|])(\d{1,2})\s*(?:=|-|\/|\.)\s*(\d+)(?=$|[\s,;|])/g;
+
+
+    let match;
+
+    let found = [];
+
+    let rejected = [];
+
+
+    /*
+       पूरी text पर match
+    */
+
+    while ((match = regex.exec(raw)) !== null) {
+
+        const rawNumber = match[2];
+
+        const rawAmount = match[3];
+
+        const key =
+            normalizeTwoDigit(rawNumber);
+
+        const amount =
+            toInteger(rawAmount);
+
+
+        if (
+            key !== null &&
+            amount !== null &&
+            amount >= 0
+        ) {
+
+            addAmount(key, amount);
+
+            found.push(
+                `${key} = ₹${amount}`
+            );
+
+        } else {
+
+            rejected.push(
+                `${rawNumber}=${rawAmount}`
+            );
+        }
+    }
+
+
+    /*
+       अगर कुछ भी नहीं मिला
+    */
+
+    if (found.length === 0) {
+
+        alert(
+            "कोई सही 2-digit entry नहीं मिली!\n\n" +
+            "सही उदाहरण:\n" +
+            "12=50\n" +
+            "03=100\n" +
+            "99=200"
+        );
+
+        return;
+    }
+
+
+    /*
+       Output
+    */
+
+    document.getElementById("cleanedText").innerText =
+        found.join("\n");
+
+    document.getElementById("outBox").style.display =
+        "block";
+
+
+    renderBoard();
+
+
+    let message =
+        `${found.length} entries सफलतापूर्वक load हुईं।`;
+
+    if (rejected.length > 0) {
+
+        message +=
+            `\n\n${rejected.length} invalid entries ignore हुईं।`;
+    }
+
+    alert(message);
+}
+
+
+/* =====================================================
+   FROM - TO
+   ===================================================== */
+
+function loadLadi() {
+
+    const fromText =
+        document.getElementById("fromNum").value;
+
+    const toText =
+        document.getElementById("toNum").value;
+
+    const amountText =
+        document.getElementById("ladiAmount").value;
+
+
+    if (
+        fromText === "" ||
+        toText === "" ||
+        amountText === ""
+    ) {
+
+        alert("From, To और Amount तीनों भरें!");
+
+        return;
+    }
+
+
+    const from =
+        toInteger(fromText);
+
+    const to =
+        toInteger(toText);
+
+    const amount =
+        toInteger(amountText);
+
+
+    if (
+        from === null ||
+        to === null ||
+        amount === null
+    ) {
+
+        alert("कृपया केवल valid numbers डालें!");
+
+        return;
+    }
+
+
+    if (
+        from < 0 ||
+        from > 99 ||
+        to < 0 ||
+        to > 99
+    ) {
+
+        alert(
+            "From और To केवल 0 से 99 के बीच होने चाहिए!"
+        );
+
+        return;
+    }
+
+
+    if (from > to) {
+
+        alert(
+            "From number, To number से बड़ा नहीं हो सकता!"
+        );
+
+        return;
+    }
+
+
+    if (amount <= 0) {
+
+        alert("Amount 0 से बड़ा होना चाहिए!");
+
+        return;
+    }
+
+
+    let count = 0;
+
+    let addedTotal = 0;
+
+
+    /*
+       EXACT RANGE
+
+       Example:
+       03 -> 06
+       50
+
+       03 +50
+       04 +50
+       05 +50
+       06 +50
+    */
+
+    for (let number = from; number <= to; number++) {
+
+        const key =
+            String(number).padStart(2, "0");
+
+        jantriData[key] += amount;
+
+        count++;
+
+        addedTotal += amount;
+    }
+
+
+    renderBoard();
+
+
+    alert(
+        `लड़ी सफलतापूर्वक लोड हुई!\n\n` +
+        `From: ${String(from).padStart(2, "0")}\n` +
+        `To: ${String(to).padStart(2, "0")}\n` +
+        `हर नंबर: ₹${amount}\n` +
+        `कुल नंबर: ${count}\n` +
+        `इस entry का कुल: ₹${addedTotal}`
+    );
+}
+
+
+/* =====================================================
+   CROSSING
+   ===================================================== */
+
+function loadCrossing() {
+
+    const digitsText =
+        document
+            .getElementById("crossDigits")
+            .value
+            .trim();
+
+    const amountText =
+        document.getElementById("crossAmount").value;
+
+
+    if (!digitsText || amountText === "") {
+
+        alert("Digits और Amount दोनों भरें!");
+
+        return;
+    }
+
+
+    if (!/^\d+$/.test(digitsText)) {
+
+        alert("Digits में केवल 0 से 9 तक अंक डालें!");
+
+        return;
+    }
+
+
+    const amount =
+        toInteger(amountText);
+
+
+    if (amount === null || amount <= 0) {
+
+        alert("Amount सही भरें!");
+
+        return;
+    }
+
+
+    const digits =
+        digitsText.split("");
+
+
+    if (digits.length < 1) {
+
+        alert("कम से कम एक digit डालें!");
+
+        return;
+    }
+
+
+    let count = 0;
+
+
+    /*
+       हर digit के साथ हर digit
+
+       123:
+
+       11
+       12
+       13
+       21
+       22
+       23
+       31
+       32
+       33
+    */
+
+    for (let i = 0; i < digits.length; i++) {
+
+        for (let j = 0; j < digits.length; j++) {
+
+            const key =
+                digits[i] + digits[j];
+
+            /*
+               key हमेशा 2 digit है
+            */
+
+            if (jantriData[key] !== undefined) {
+
+                jantriData[key] += amount;
+
+                count++;
+            }
+        }
+    }
+
+
+    renderBoard();
+
+
+    alert(
+        `Crossing सफलतापूर्वक load हुई!\n\n` +
+        `Digits: ${digitsText}\n` +
+        `Amount: ₹${amount}\n` +
+        `कुल जोड़ियां: ${count}`
+    );
+}
+
+
+/* =====================================================
+   COPY CLEAN TEXT
+   ===================================================== */
+
+function copyCleanText() {
+
+    const text =
+        document.getElementById("cleanedText").innerText;
+
+    if (!text.trim()) {
+
+        alert("कॉपी करने के लिए कोई text नहीं है!");
+
+        return;
+    }
+
+
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                alert("Text copy हो गया!");
+            })
+            .catch(() => {
+                fallbackCopy(text);
+            });
+
+    } else {
+
+        fallbackCopy(text);
+    }
+}
+
+
+function fallbackCopy(text) {
+
+    const area =
+        document.createElement("textarea");
+
+    area.value = text;
+
+    document.body.appendChild(area);
+
+    area.select();
+
+    document.execCommand("copy");
+
+    document.body.removeChild(area);
+
+    alert("Text copy हो गया!");
+}
+
+
+/* =====================================================
+   WHATSAPP SHARE
+   ===================================================== */
+
+function shareOnWhatsApp() {
+
+    const total =
+        calculateTotal();
+
+
+    if (total <= 0) {
+
+        alert("जंत्री में कोई amount नहीं है!");
+
+        return;
+    }
+
+
+    let message =
+        "*📊 FINAL JANTRI LEDGER REPORT*\n\n";
+
+
+    let count = 0;
+
+
+    for (let i = 0; i <= 99; i++) {
+
+        const key =
+            String(i).padStart(2, "0");
+
+        const amount =
+            jantriData[key];
+
+
+        if (amount > 0) {
+
+            message +=
+                `🔹 *${key}* = ₹${amount}\n`;
+
+            count++;
+        }
+    }
+
+
+    message +=
+        `\n📌 Total Entries: ${count}`;
+
+    message +=
+        `\n💰 *FINAL TOTAL: ₹${total}*`;
+
+
+    const url =
+        "https://wa.me/?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(url, "_blank");
+}
+
+
+/* =====================================================
+   CLEAR ALL
+   ===================================================== */
+
+function wipeLedger() {
+
+    const confirmClear =
+        confirm(
+            "क्या आप पूरा Jantri हिसाब साफ़ करना चाहते हैं?"
+        );
+
+
+    if (!confirmClear) {
+        return;
+    }
+
+
+    for (let i = 0; i <= 99; i++) {
+
+        const key =
+            String(i).padStart(2, "0");
+
+        jantriData[key] = 0;
+    }
+
+
+    /*
+       सभी fields clear
+    */
+
+    document.getElementById(
+        "whatsappInput"
+    ).value = "";
+
+
+    document.getElementById(
+        "cleanedText"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "outBox"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "fromNum"
+    ).value = "";
+
+
+    document.getElementById(
+        "toNum"
+    ).value = "";
+
+
+    document.getElementById(
+        "ladiAmount"
+    ).value = "";
+
+
+    document.getElementById(
+        "crossDigits"
+    ).value = "";
+
+
+    document.getElementById(
+        "crossAmount"
+    ).value = "";
+
+
+    renderBoard();
+
+
+    alert("पूरा Jantri हिसाब साफ़ हो गया!");
+}
+
+
+/* =====================================================
+   BUTTON EVENTS
+   ===================================================== */
+
+document
+    .getElementById("tabWa")
+    .addEventListener("click", function() {
+
+        switchTab("tabWa", "panelWa");
+
+    });
+
+
+document
+    .getElementById("tabGrid")
+    .addEventListener("click", function() {
+
+        switchTab("tabGrid", "panelGrid");
+
+    });
+
+
+document
+    .getElementById("tabLt")
+    .addEventListener("click", function() {
+
+        switchTab("tabLt", "panelLt");
+
+    });
+
+
+document
+    .getElementById("tabCr")
+    .addEventListener("click", function() {
+
+        switchTab("tabCr", "panelCr");
+
+    });
+
+
+document
+    .getElementById("btnWaSubmit")
+    .addEventListener("click", parseWhatsApp);
+
+
+document
+    .getElementById("btnCopyText")
+    .addEventListener("click", copyCleanText);
+
+
+document
+    .getElementById("btnLtSubmit")
+    .addEventListener("click", loadLadi);
+
+
+document
+    .getElementById("btnCrSubmit")
+    .addEventListener("click", loadCrossing);
+
+
+document
+    .getElementById("btnShareWhatsApp")
+    .addEventListener("click", shareOnWhatsApp);
+
+
+document
+    .getElementById("btnWipeSystem")
+    .addEventListener("click", wipeLedger);
+
+
+/* =====================================================
+   INITIALIZE
+   ===================================================== */
+
+renderBoard();
+
+</script>
+
+</body>
+</html>
